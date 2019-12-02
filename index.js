@@ -1,7 +1,7 @@
 const request = require("request");
 
 const createRequest = (input, callback) => {
-    const url = "http://localhost:8090/market/AMPL_USD_via_ALL/daily-volume/?roundDay=true";
+    const url = "https://api.eth.events/market/AMPL_USD_via_ALL/daily-volume/?roundDay=true";
 
     const options = {
         method: 'GET',
