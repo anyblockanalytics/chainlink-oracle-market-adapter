@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:12
 
 ENV LISTEN_PORT=8080
 ENV LISTEN_IP=0.0.0.0
@@ -17,6 +17,8 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 RUN npm ci
+
+ENV NODE_ENV=production
 
 COPY ./app.js ./
 COPY ./index.js ./
