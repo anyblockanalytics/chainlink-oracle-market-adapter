@@ -1,0 +1,10 @@
+name: Ampleforth VWAP Oracle
+description: AMPL 24h VWAP calculated via Anyblock Analytics API. Can be extended for additional calculations.
+node_identifier: market-oracle
+platforms:
+  - Docker
+  - AWS Lambda
+  - GCP Functions
+data_sources:
+  - name: Anyblock Analytics API
+    url: https://anyblockanalytics.com
