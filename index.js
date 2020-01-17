@@ -1,7 +1,13 @@
 const request = require("request");
 
+const DEFAULT_PARAMETERS = {
+    pair: "AMPL_USD_via_ALL"
+}
+
 const createRequest = (input, callback) => {
-    const url = "https://api.eth.events/market/AMPL_USD_via_ALL/daily-volume/?roundDay=true";
+    const { pair } = Object.assign({}, DEFAULT_PARAMETERS, input)
+
+    const url = `https://api.eth.events/market/${pair}/daily-volume/?roundDay=true`
 
     const options = {
         method: 'GET',
