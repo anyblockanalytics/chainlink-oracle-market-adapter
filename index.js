@@ -9,7 +9,7 @@ const requestRetry = (options, retries) => {
             return rp(options)
                 .then(response => {
                     if (response.body.error) {
-                        if (n === 1) {
+                        if (n <= 1) {
                             reject(response)
                         } else {
                             setTimeout(() => {
@@ -22,7 +22,7 @@ const requestRetry = (options, retries) => {
                     }
                 })
                 .catch(error => {
-                    if (n === 1) {
+                    if (n <= 1) {
                         reject(error)
                     } else {
                         setTimeout(() => {
