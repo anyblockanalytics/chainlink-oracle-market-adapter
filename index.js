@@ -5,7 +5,7 @@ const DEFAULT_PARAMETERS = {
 }
 
 const createRequest = (input, callback) => {
-    const { pair } = Object.assign({}, DEFAULT_PARAMETERS, input)
+    const { pair } = Object.assign({}, DEFAULT_PARAMETERS, input.data)
 
     const url = `https://api.eth.events/market/${pair}/daily-volume/?roundDay=true`
 
