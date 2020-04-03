@@ -1,11 +1,47 @@
-const request = require("request");
+const rp = require('request-promise')
+const retries = process.env.RETRIES || 3
+const delay = process.env.RETRY_DELAY || 1000
+const timeout = process.env.TIMEOUT || 5000
+
+const requestRetry = (options, retries) => {
+    return new Promise((resolve, reject) => {
+        const retry = (options, n) => {
+            return rp(options)
+                .then(response => {
+                    if (response.body.error) {
+                        if (n <= 1) {
+                            reject(response)
+                        } else {
+                            setTimeout(() => {
+                                retries--
+                                retry(options, retries)
+                            }, delay)
+                        }
+                    } else {
+                        return resolve(response)
+                    }
+                })
+                .catch(error => {
+                    if (n <= 1) {
+                        reject(error)
+                    } else {
+                        setTimeout(() => {
+                            retries--
+                            retry(options, retries)
+                        }, delay)
+                    }
+                })
+        }
+        return retry(options, retries)
+    })
+}
 
 const DEFAULT_PARAMETERS = {
     pair: "AMPL_USD_via_ALL"
 }
 
 const createRequest = (input, callback) => {
-    const { pair } = Object.assign({}, DEFAULT_PARAMETERS, input)
+    const { pair } = Object.assign({}, DEFAULT_PARAMETERS, input.data)
 
     const url = `https://api.eth.events/market/${pair}/daily-volume/?roundDay=true`
 
@@ -16,29 +52,29 @@ const createRequest = (input, callback) => {
             "Authorization": "Bearer " + process.env.API_KEY,
             "Content-Type": "application/json"
         },
-        json: true
+        timeout: timeout,
+        json: true,
+        resolveWithFullResponse: true
     }
-    request(options, (error, response, body) => {
-        if (error || response.statusCode >= 400) {
-            const statusCode = response ? response.statusCode : 500
-            console.log(error)
-            const errorText = error || body
-            callback(statusCode, {
-                jobRunID: input.id,
-                status: "errored",
-                error: errorText,
-                data: {}
-            });
-        } else {
+    requestRetry(options, retries)
+        .then(response => {
+            const result = response.body["overallVWAP"]
+            response.body.result = result
             callback(response.statusCode, {
                 jobRunID: input.id,
-                data: body,
-                status: "completed",
-                pending: false,
-                error: null
-            });
-        }
-    });
+                data: response.body,
+                result,
+                statusCode: response.statusCode
+            })
+        })
+        .catch(error => {
+            callback(error.statusCode, {
+                jobRunID: input.id,
+                status: 'errored',
+                error,
+                statusCode: error.statusCode
+            })
+        })
 };
 
 exports.gcpservice = (req, res) => {

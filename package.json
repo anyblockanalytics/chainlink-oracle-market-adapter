@@ -4,12 +4,17 @@
   "author": "Anyblock Analytics GmbH <tech@anyblockanalytics.com>",
   "description": "",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "test": "./node_modules/.bin/_mocha --timeout 0"
+  },
   "dependencies": {
-    "request": "2.88.0"
+    "request": "2.88.2",
+    "request-promise": "4.2.5"
   },
   "devDependencies": {
     "body-parser": "1.19.0",
-    "express": "4.17.1"
+    "chai": "4.2.0",
+    "express": "4.17.1",
+    "mocha": "7.1.1"
   }
 }
