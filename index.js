@@ -43,7 +43,7 @@ const DEFAULT_PARAMETERS = {
 const createRequest = (input, callback) => {
     const { pair } = Object.assign({}, DEFAULT_PARAMETERS, input.data)
 
-    const url = `https://api.eth.events/market/${pair}/daily-volume/?roundDay=true`
+    const url = `https://api.anyblock.tools/market/${pair}/daily-volume/?roundDay=true`
 
     const options = {
         method: 'GET',
