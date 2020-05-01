@@ -1,7 +1,7 @@
 const rp = require('request-promise')
 const retries = process.env.RETRIES || 3
 const delay = process.env.RETRY_DELAY || 1000
-const timeout = process.env.TIMEOUT || 5000
+const timeout = process.env.TIMEOUT || 30000
 
 const requestRetry = (options, retries) => {
     return new Promise((resolve, reject) => {
